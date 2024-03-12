@@ -5,6 +5,11 @@ from app import app
 from .extensions import db
 from app.forms import LoginForm, TicketForm, RegistrationForm, DeleteTicketForm, AmendTicketForm, AdminChangeStatusForm, AdminChangeNotesForm
 from app.models import Ticket, User
+import os
+
+@app.context_processor
+def inject_env():
+    return dict(env=os.environ)
 
 def flash_error_messages(form_errors):
     for fieldName, errorMessages in form_errors.items():
