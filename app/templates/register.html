@@ -1,0 +1,47 @@
+{% extends 'layout.html' %}
+{% block head %}
+  <title>Register</title>
+
+  <style>
+    .register-form {
+      max-width: 800px;
+      margin: 0 auto;
+      margin-top: 100px;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+
+    <div class="register-form">
+      <h1>Register</h1>
+      <form method="POST" action="{{ url_for('register') }}">
+        {{ form.hidden_tag() }} {% for error in form.email.errors %}
+        <div>{{ error }}</div>
+        {% endfor %}
+        <label for="username">Username</label>
+        <input type="text" name="username" id="username" required />
+        <br />
+        <label for="email">Email</label>
+        <input type="email" name="email" id="email" required />
+        <br />
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password" required />
+        <br />
+        <label for="confirm_password">Confirm Password</label>
+        <input
+          type="password"
+          name="confirm_password"
+          id="confirm_password"
+          required
+        />
+        <br />
+        <input type="submit" value="Register" />
+      </form>
+      <p>
+        Already have an account? <a href="{{ url_for('login') }}">Log in here</a>.
+      </p>
+    </div>
+{% endblock %}
+
+<!---This html file is for the register page-->

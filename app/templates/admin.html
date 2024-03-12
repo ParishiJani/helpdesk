@@ -1,0 +1,145 @@
+{% extends 'layout.html' %}
+{% block head %}
+    <title>Ticket Dashboard</title>
+
+    <style>
+        .ticket {
+            padding: 10px;
+            display: flex;
+            border-radius: 10px;
+            border: 1px solid rgb(50, 50, 50);
+            margin-bottom: 10px;
+        }
+
+        .ticket button, a.a-button {
+            display: block;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            gap: 5px;
+            place-items: center;
+            font-size: 1rem;
+            text-decoration: none;
+            color: black;
+            margin: 0;
+        }
+
+        .ticket button svg, a.a-button svg {
+            height: 24px;
+            width: 24px;
+        }
+
+        .ticket-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .ticket-list li {
+            padding: 0;
+            margin: 0;
+        }
+
+        .ticket-details {
+            flex-grow: 1;
+        }
+
+        .ticket-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .admin-icon {
+            max-width: 300px;
+            display: flex;
+            gap: 5px;
+            padding: 10px;
+            border: 2px solid rgb(66, 129, 66);
+            background-color: rgb(123, 173, 123);
+            border-radius: 5px;
+            align-items: center;
+            font-size: 1.25rem;
+        }
+
+        .dashboard {
+            display: flex;
+            gap: 30px;
+            padding: 0px 20px;
+        }
+
+        .dashboard > * {
+            flex-basis: 100%;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<h1>Admin Dashboard</h1>
+    
+    <div class="container">
+        <h2>Ticket List</h2>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ticket in tickets %}
+                    <tr>
+                        <td>{{ ticket.id }}</td>
+                        <td>{{ ticket.title }}</td>
+                        <td>{{ ticket.description }}</td>
+                        <td>
+                            <form action="" method="post">
+                                {{ admin_change_status_form.hidden_tag() }}
+                                {{ admin_change_status_form.id(value=ticket.id, hidden=True) }}
+                                <select id="status-{{ ticket.id }}" name="status-status">
+                                    {% for choice_value, choice_label in admin_change_status_form.status.choices %}
+                                        <option value="{{ choice_value }}" {% if choice_value == ticket.status %}selected{% endif %}>{{ choice_label }}</option>
+                                    {% endfor %}
+                                </select>
+                                {{ admin_change_status_form.save_changes() }}
+                            </form>
+                        </td>
+                        <td>
+                            <form action="" method="post">
+                                {{ admin_change_notes_form.hidden_tag() }}
+                                {{ admin_change_notes_form.id(value=ticket.id, hidden=True) }}
+                                {{ admin_change_notes_form.notes(value=ticket.notes) }}
+                                {{ admin_change_notes_form.save_notes() }}
+                            </form>
+                        </td>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+{% endblock %}
+
+<!---This html file is for displaying the admin dashboard-->
