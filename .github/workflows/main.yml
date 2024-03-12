@@ -37,7 +37,7 @@ jobs:
       - name: Set environment variables
         env:
           deploy_url: ${{ secrets.RENDER_DEPLOY_HOOK_URL }} #loads secrets into env variables
-          nonprod_deploy_url: ${{ secrets.NONPROD_RENDER_DEPLOY_HOOK_URL }}
+          nonprod_deploy_url: ${{ secrets.NONPROD_RENDER_DEPLOY_HOOK }}
         run: |
           if [[ $GITHUB_REF == 'refs/heads/main' ]]; then
               echo "DEPLOY_URL=$deploy_url" >> "$GITHUB_ENV"
