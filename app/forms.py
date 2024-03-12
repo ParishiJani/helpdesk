@@ -15,7 +15,7 @@ class TicketForm(FlaskForm):
     description = TextAreaField('Description', validators=[DataRequired()])
     submit_create = SubmitField('Submit Ticket')
 
-# TicketForm for creating new tickets
+# TicketForm for amending new tickets
 class AmendTicketForm(FlaskForm):
     id = StringField('Ticket ID', validators=[DataRequired(), Length(max=100)])
     title = StringField('Title', validators=[DataRequired(), Length(max=100)])
