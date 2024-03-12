@@ -9,7 +9,7 @@
   <body>
     <div class="topnav">
       <a class="active" href="{{ url_for('dashboard')}}">Home</a>
-      <a href="#">Environment: {{ env['DEPLOYMENT_ENVIRONMENT'] or "unknown" }}</a>
+      <a href="#">Environment: {{ env['DEPLOY_ENVIRONMENT'] or "unknown" }}</a>
 
       {% if current_user.is_authenticated %}
       <a href="{{ url_for('about')}}">About</a>
