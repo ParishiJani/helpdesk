@@ -6,6 +6,15 @@ from .extensions import db
 from app.forms import LoginForm, TicketForm, RegistrationForm, DeleteTicketForm, AmendTicketForm, AdminChangeStatusForm, AdminChangeNotesForm
 from app.models import Ticket, User
 import os
+import bcrypt
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
+
+limiter = Limiter(
+    get_remote_address,
+    app=app,
+    default_limits=["5 per minute", "100 per day"]
+)
 
 @app.context_processor
 def inject_env():
@@ -61,15 +70,16 @@ def admin():
 
 # Login route
 @app.route('/login', methods=['GET', 'POST'])
+@limiter.limit("5 per minute")
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('dashboard'))
-
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         #print(user.password, form.password.data) - checked correct password for user
-        if user and user.password == form.password.data:
+        encoded_password = form.password.data.encode("utf-8")
+        if user and bcrypt.checkpw(encoded_password, user.password.encode("utf-8")): 
             login_user(user)
             next_page = request.args.get('next')
             flash('Login successful!', 'success')
@@ -81,6 +91,7 @@ def login():
     return render_template('login.html', form=form)
 
 @app.route('/register', methods=['GET', 'POST'])
+@limiter.limit("5 per minute")
 def register():
     if current_user.is_authenticated:
         return redirect(url_for('index'))
@@ -89,9 +100,12 @@ def register():
     if form.validate_on_submit():
         # Create a new user and add it to the database
         print("got form")
+        encoded_password = form.password.data.encode("utf-8") #encoding password
+        salt = bcrypt.gensalt() #generating a salt for the password
+        hashed_password = bcrypt.hashpw(encoded_password, salt) 
         user = User(
             username=form.username.data,
-            password=form.password.data,
+            password=hashed_password, 
             email=form.email.data,
             is_admin=False,  # Assuming newly registered users are not admins
         )
