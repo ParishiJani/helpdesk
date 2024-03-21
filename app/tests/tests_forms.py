@@ -25,7 +25,6 @@ class TestClass(unittest.TestCase):
         cls.app_context.pop()
         cls.request_context.pop()
 
-
 class TestRegistrationForm(TestClass):
     def test_valid_registration(self):
         # Test a valid registration form

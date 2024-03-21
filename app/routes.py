@@ -13,7 +13,7 @@ from flask_limiter.util import get_remote_address
 limiter = Limiter(
     get_remote_address,
     app=app,
-    default_limits=["5 per minute", "100 per day"]
+    default_limits=["5 per minute", "100 per day"] #Limits a user to 5 attempts per minute, defending against brute force attacks
 )
 
 @app.context_processor
@@ -27,7 +27,7 @@ def flash_error_messages(form_errors):
 
 # Index route (User Dashboard)
 @app.route('/')
-@login_required  # Requires the user to be logged in
+@login_required  #Requires the user to be logged in
 def index():
     user_tickets = current_user.tickets
     return render_template('index.html', user=current_user, tickets=user_tickets)
@@ -38,7 +38,7 @@ def index():
 def admin():
     if not current_user.is_admin:
         flash('You do not have admin privileges.', 'warning')
-        return redirect(url_for('dashboard'))
+        return redirect(url_for('dashboard')) #URL Validation - Defending against Broken Access Control 
 
     admin_change_status_form = AdminChangeStatusForm(prefix="status")
     admin_change_notes_form = AdminChangeNotesForm(prefix="notes")
@@ -70,7 +70,7 @@ def admin():
 
 # Login route
 @app.route('/login', methods=['GET', 'POST'])
-@limiter.limit("5 per minute")
+@limiter.limit("5 per minute") #Limits a user to 5 attempts per minute, defending against brute force attacks
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('dashboard'))
